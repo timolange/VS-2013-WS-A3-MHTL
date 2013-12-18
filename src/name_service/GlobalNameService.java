@@ -1,9 +1,9 @@
 package name_service;
 
 import mware_lib.Common.Config;
-import mware_lib.Common.Reference;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,14 +20,14 @@ import java.util.concurrent.Executors;
 public class GlobalNameService extends Thread{
     public static final int MAX_Clients = 10;
     ServerSocket welcomeSocket;
-    private ConcurrentHashMap<String, Reference> reverenceList;
+    private ConcurrentHashMap<String, InetSocketAddress> reverenceList;
     ExecutorService executor;
     private int port;
     private int threadCount = 0;
 
     public GlobalNameService(int port){
         this.port = port;
-        this.reverenceList = new ConcurrentHashMap<String, Reference>();
+        this.reverenceList = new ConcurrentHashMap<String, InetSocketAddress>();
         this.executor = Executors.newFixedThreadPool(MAX_Clients);
     }
 
@@ -40,7 +40,7 @@ public class GlobalNameService extends Thread{
         }
     }
     //getter zum testen
-    public ConcurrentHashMap<String, Reference> getReverenceList() {
+    public ConcurrentHashMap<String, InetSocketAddress> getReverenceList() {
         return reverenceList;
     }
 
@@ -52,11 +52,11 @@ public class GlobalNameService extends Thread{
         threadCount++;
     }
 
-    public void rebind(String name, Reference ref){
+    public void rebind(String name, InetSocketAddress ref){
         reverenceList.put(name,ref);
     }
 
-    public Reference resolve(String name){
+    public InetSocketAddress resolve(String name){
         return reverenceList.get(name);
     }
 

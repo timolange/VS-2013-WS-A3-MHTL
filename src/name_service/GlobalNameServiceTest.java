@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -17,7 +18,7 @@ import java.net.Socket;
  */
 public class GlobalNameServiceTest {
 
-    public static Reference getResponseFromServer(GNSRequest GNSRequest) throws IOException, ClassNotFoundException {
+    public static InetSocketAddress getResponseFromServer(GNSRequest GNSRequest) throws IOException, ClassNotFoundException {
         Socket tcpSocket = new Socket(InetAddress.getLocalHost(), Config.GLOBAL_NAME_SERVICE_PORT);
         //ObjectOutputStream muss zuerst erzeugt werden, da ObjectInputStream sofort nach dem erzeugen blockiert bis was geschickt oder versendet wurde!!!
         ObjectOutputStream objOS = new ObjectOutputStream(tcpSocket.getOutputStream());
@@ -26,7 +27,7 @@ public class GlobalNameServiceTest {
         objOS.writeObject(GNSRequest);
         Object response = objIS.readObject();
 
-        return (response instanceof Reference) ? ((Reference)response) : null;
+        return (InetSocketAddress)response;
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -34,12 +35,12 @@ public class GlobalNameServiceTest {
         GlobalNameService ns = new GlobalNameService(Config.GLOBAL_NAME_SERVICE_PORT);
         ns.start();
 
-        Reference ref = new ReferenceImpl(50001, InetAddress.getLocalHost());
-        GNSRequest req1 = new GNSRequestImpl("rebind",new Object[]{"test", ref}, new Class[]{String.class, Reference.class});
+        InetSocketAddress ref = new InetSocketAddress(InetAddress.getLocalHost(),50001);
+        GNSRequest req1 = new GNSRequestImpl("rebind",new Object[]{"test", ref}, new Class[]{String.class, InetSocketAddress.class});
         GNSRequest req2 = new GNSRequestImpl("resolve",new Object[]{"test"}, new Class[]{String.class});
 
         getResponseFromServer(req1);
-        Reference returnVal = getResponseFromServer(req2);
+        InetSocketAddress returnVal = getResponseFromServer(req2);
 
         long endtime = System.currentTimeMillis();
         System.out.println("ReturnValue: "+returnVal);

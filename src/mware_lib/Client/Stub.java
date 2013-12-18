@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.rmi.Remote;
 import java.util.Arrays;
@@ -22,15 +23,15 @@ import java.util.Arrays;
 public class Stub {
     private static String GET_CLASS = "getClass";
     public String name;
-    private Reference reference;
+    private InetSocketAddress reference;
 
-    public Stub(String name, Reference reference) {
+    public Stub(String name, InetSocketAddress reference) {
         this.name = name;
         this.reference = reference;
     }
 
     public Object getResponseFromRemoteObject(MethodInvokeRequest methodInvokeRequest) throws IOException, ClassNotFoundException {
-        Socket tcpSocket = new Socket(reference.getAdress(), reference.getPort());
+        Socket tcpSocket = new Socket(reference.getAddress(), reference.getPort());
         //ObjectOutputStream muss zuerst erzeugt werden, da ObjectInputStream sofort nach dem erzeugen blockiert bis was geschickt oder versendet wurde!!!
         ObjectOutputStream objOS = new ObjectOutputStream(tcpSocket.getOutputStream());
         ObjectInputStream objIS = new ObjectInputStream(tcpSocket.getInputStream());

@@ -3,13 +3,12 @@ package mware_lib;
 import mware_lib.Client.Stub;
 import mware_lib.Common.GNSRequest;
 import mware_lib.Common.GNSRequestImpl;
-import mware_lib.Common.Reference;
-import mware_lib.Common.ReferenceImpl;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -43,8 +42,8 @@ public class NameServiceImpl extends NameService {
         try {
             registredObjects.put(name, servant);
 
-            Reference ref = new ReferenceImpl(localServerPort, InetAddress.getLocalHost());
-            GNSRequest req = new GNSRequestImpl(GNSRequestImpl.REBIND,new Object[]{name, ref}, new Class[]{name.getClass(), Reference.class});
+            InetSocketAddress ref = new InetSocketAddress(InetAddress.getLocalHost(),localServerPort);
+            GNSRequest req = new GNSRequestImpl(GNSRequestImpl.REBIND,new Object[]{name, ref}, new Class[]{name.getClass(), InetSocketAddress.class});
             Object response = getResponseFromGlobalNameService(req);
 
         } catch (UnknownHostException e) {
@@ -62,7 +61,7 @@ public class NameServiceImpl extends NameService {
         Object res = null;
         try {
             GNSRequest req = new GNSRequestImpl(GNSRequestImpl.RESOLVE,new Object[]{name}, new Class[]{name.getClass()});
-            Reference ref = getResponseFromGlobalNameService(req);
+            InetSocketAddress ref = getResponseFromGlobalNameService(req);
 
             res = new Stub(name, ref);
 
@@ -74,7 +73,7 @@ public class NameServiceImpl extends NameService {
         return res;
     }
 
-    private Reference getResponseFromGlobalNameService(GNSRequest GNSRequest) throws IOException, ClassNotFoundException {
+    private InetSocketAddress getResponseFromGlobalNameService(GNSRequest GNSRequest) throws IOException, ClassNotFoundException {
         Socket tcpSocket = new Socket(globalNameServiceHost, globalNameServicePort);
         //ObjectOutputStream muss zuerst erzeugt werden, da ObjectInputStream sofort nach dem erzeugen blockiert bis was geschickt oder versendet wurde!!!
         ObjectOutputStream objOS = new ObjectOutputStream(tcpSocket.getOutputStream());
@@ -84,6 +83,6 @@ public class NameServiceImpl extends NameService {
         Object response = objIS.readObject();
         tcpSocket.close();
 
-        return (response instanceof Reference) ? ((Reference)response) : null;
+        return (InetSocketAddress)response;
     }
 }
