@@ -47,13 +47,13 @@ public class SkeletonThread extends Thread {
             }
 
         }  catch (NoSuchMethodException e) {
-            returnVal = e;
+            returnVal = e.getCause();
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (InvocationTargetException e) {
-            returnVal = e;
+            returnVal = e.getCause();
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (IllegalAccessException e) {
-            returnVal = e;
+            returnVal = e.getCause();
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (Exception e){
             returnVal = e;
