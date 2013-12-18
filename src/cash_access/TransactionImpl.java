@@ -24,7 +24,9 @@ public class TransactionImpl extends TransactionImplBase implements Serializable
     public void deposit(String accountId, double amount) throws InvalidParamException {
         try {
             MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "deposit",new Object[]{accountId,amount}, new Class[]{accountId.getClass(),double.class});
-            stub.getResponseFromRemoteObject(req1);
+            Object res = stub.getResponseFromRemoteObject(req1);
+            if(res instanceof InvalidParamException){throw  (InvalidParamException)res;}
+            if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
@@ -36,7 +38,9 @@ public class TransactionImpl extends TransactionImplBase implements Serializable
     public void withdraw(String accountId, double amount) throws InvalidParamException, OverdraftException {
         try {
             MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "withdraw",new Object[]{accountId,amount}, new Class[]{accountId.getClass(),double.class});
-            stub.getResponseFromRemoteObject(req1);
+            Object res = stub.getResponseFromRemoteObject(req1);
+            if(res instanceof InvalidParamException){throw  (InvalidParamException)res;}
+            if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
@@ -46,15 +50,16 @@ public class TransactionImpl extends TransactionImplBase implements Serializable
 
     @Override
     public double getBalance(String accountId) throws InvalidParamException {
-        Double res = null;
+        Object res = null;
         try {
             MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "getBalance",new Object[]{accountId}, new Class[]{accountId.getClass()});
-            res =(Double) stub.getResponseFromRemoteObject(req1);
+            res = stub.getResponseFromRemoteObject(req1);
+            if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        return res;
+        return (Double)res;
     }
 }

@@ -25,34 +25,40 @@ public class SkeletonThread extends Thread {
     public SkeletonThread(Socket socket, SkeletonServer skeletonServer){
         this.socket = socket;
         this.skeletonServer = skeletonServer;
+
+        try {
+            outToClient = new ObjectOutputStream(socket.getOutputStream());
+            inFromClient = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
     public void run(){
+        Object returnVal = null;
         try {
-            outToClient = new ObjectOutputStream(socket.getOutputStream());
-            inFromClient = new ObjectInputStream(socket.getInputStream());
-
             MethodInvokeRequest methodInvokeRequest = readFromClient();
             Object servant = skeletonServer.getServant(methodInvokeRequest.getObjectIdentifier());
-            Object returnVal = null;
             synchronized (servant){
                 Method method = servant.getClass().getMethod(methodInvokeRequest.getCommand(), methodInvokeRequest.getParameterClasses());
                 returnVal = method.invoke(servant, methodInvokeRequest.getParameter());
                 //servant.notifyAll();
             }
 
-            writeToClient(returnVal);
-
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (NoSuchMethodException e) {
+        }  catch (NoSuchMethodException e) {
+            returnVal = e;
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (InvocationTargetException e) {
+            returnVal = e;
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (IllegalAccessException e) {
+            returnVal = e;
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } finally {
+        } catch (Exception e){
+            returnVal = e;
+        }finally {
+            writeToClient(returnVal);
             skeletonServer.decreaseThreadCount();
             try {
                 socket.close();

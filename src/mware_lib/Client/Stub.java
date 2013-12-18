@@ -46,7 +46,7 @@ public class Stub {
 //    public Object getProxyObject(){
 //        Object proxy = null;
 //        try {
-//            MethodInvokeRequest req1 = new MethodInvokeRequest(name, GET_CLASS, null);
+//            MethodInvokeRequest req1 = new MethodInvokeRequest(name, GET_CLASS, null,null);
 //            Class remoteClass = (Class)getResponseFromRemoteObject(req1);
 //
 //            proxy = Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), remoteClass.getInterfaces(), new InvokeHandler(this, name));
@@ -70,7 +70,7 @@ public class Stub {
 //
 //        @Override
 //        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-//            MethodInvokeRequest req = new MethodInvokeRequest(objectIdentifier, method.getName(), args);
+//            MethodInvokeRequest req = new MethodInvokeRequest(objectIdentifier, method.getName(), args, method.getParameterTypes());
 //            Object response = getResponseFromRemoteObject(req);
 //
 //            return response;

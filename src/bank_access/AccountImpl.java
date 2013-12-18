@@ -24,7 +24,9 @@ public class AccountImpl extends AccountImplBase implements Serializable {
     public void transfer(double amount) throws OverdraftException {
         try {
             MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "transfer",new Object[]{amount},new Class[]{double.class});
-            stub.getResponseFromRemoteObject(req1);
+            Object res = stub.getResponseFromRemoteObject(req1);
+            if(res instanceof OverdraftException){throw  (OverdraftException)res;}
+            if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
@@ -34,15 +36,16 @@ public class AccountImpl extends AccountImplBase implements Serializable {
 
     @Override
     public double getBalance() {
-        double res = 0.0;
+        Object res = null;
         try {
             MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "getBalance",null,null);
-            res =(Double) stub.getResponseFromRemoteObject(req1);
+            res = stub.getResponseFromRemoteObject(req1);
+            if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        return res;
+        return (Double)res;
     }
 }

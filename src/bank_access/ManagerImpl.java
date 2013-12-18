@@ -22,15 +22,16 @@ public class ManagerImpl extends ManagerImplBase implements Serializable {
 
     @Override
     public String createAccount(String owner, String branch) {
-        String res = null;
+        Object res = null;
         try {
             MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "createAccount",new Object[]{owner,branch}, new Class[]{owner.getClass(),branch.getClass()});
             res =(String) stub.getResponseFromRemoteObject(req1);
+            if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        return res;
+        return (String)res;
     }
 }
