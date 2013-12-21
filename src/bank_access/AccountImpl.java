@@ -25,7 +25,7 @@ public class AccountImpl extends AccountImplBase implements Serializable {
         try {
             MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "transfer",new Object[]{amount},new Class[]{double.class});
             Object res = stub.getResponseFromRemoteObject(req1);
-            if(res instanceof OverdraftException){throw  (OverdraftException)res;}
+            if(res instanceof OverdraftException){throw  new OverdraftException(((Throwable)res).getMessage());}
             if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -36,7 +36,7 @@ public class AccountImpl extends AccountImplBase implements Serializable {
 
     @Override
     public double getBalance() {
-        Object res = null;
+        Object res = Double.valueOf(0);
         try {
             MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "getBalance",null,null);
             res = stub.getResponseFromRemoteObject(req1);
@@ -46,6 +46,6 @@ public class AccountImpl extends AccountImplBase implements Serializable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        return (Double)res;
+        return ((Double)res).doubleValue();
     }
 }

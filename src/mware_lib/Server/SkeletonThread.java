@@ -42,6 +42,7 @@ public class SkeletonThread extends Thread {
             Object servant = skeletonServer.getServant(methodInvokeRequest.getObjectIdentifier());
             synchronized (servant){
                 Method method = servant.getClass().getMethod(methodInvokeRequest.getCommand(), methodInvokeRequest.getParameterClasses());
+                method.setAccessible(true);
                 returnVal = method.invoke(servant, methodInvokeRequest.getParameter());
                 //servant.notifyAll();
             }
@@ -57,6 +58,7 @@ public class SkeletonThread extends Thread {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (Exception e){
             returnVal = e;
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }finally {
             writeToClient(returnVal);
             skeletonServer.decreaseThreadCount();
