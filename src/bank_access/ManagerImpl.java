@@ -24,7 +24,7 @@ public class ManagerImpl extends ManagerImplBase implements Serializable {
     public String createAccount(String owner, String branch) {
         Object res = null;
         try {
-            MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "createAccount",new Object[]{owner,branch}, new Class[]{owner.getClass(),branch.getClass()});
+            MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "createAccount",new Object[]{owner,branch}, new Class[]{String.class,String.class});
             res =(String) stub.getResponseFromRemoteObject(req1);
             if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
         } catch (IOException e) {

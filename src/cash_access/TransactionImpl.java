@@ -23,7 +23,7 @@ public class TransactionImpl extends TransactionImplBase implements Serializable
     @Override
     public void deposit(String accountId, double amount) throws InvalidParamException {
         try {
-            MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "deposit",new Object[]{accountId,amount}, new Class[]{accountId.getClass(),double.class});
+            MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "deposit",new Object[]{accountId,amount}, new Class[]{String.class,double.class});
             Object res = stub.getResponseFromRemoteObject(req1);
             if(res instanceof InvalidParamException){throw  new InvalidParamException(((Throwable)res).getMessage());}
             if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}
@@ -37,7 +37,7 @@ public class TransactionImpl extends TransactionImplBase implements Serializable
     @Override
     public void withdraw(String accountId, double amount) throws InvalidParamException, OverdraftException {
         try {
-            MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "withdraw",new Object[]{accountId,amount}, new Class[]{accountId.getClass(),double.class});
+            MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "withdraw",new Object[]{accountId,amount}, new Class[]{String.class,double.class});
             Object res = stub.getResponseFromRemoteObject(req1);
             if(res instanceof InvalidParamException){throw  new InvalidParamException(((Throwable)res).getMessage());}
             if(res instanceof OverdraftException){throw  new OverdraftException(((Throwable)res).getMessage());}
@@ -53,7 +53,7 @@ public class TransactionImpl extends TransactionImplBase implements Serializable
     public double getBalance(String accountId) throws InvalidParamException {
         Object res = Double.valueOf(0);
         try {
-            MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "getBalance",new Object[]{accountId}, new Class[]{accountId.getClass()});
+            MethodInvokeRequest req1 = new MethodInvokeRequest(stub.name, "getBalance",new Object[]{accountId}, new Class[]{String.class});
             res = stub.getResponseFromRemoteObject(req1);
             if(res instanceof InvalidParamException){throw  new InvalidParamException(((Throwable)res).getMessage());}
             if(res instanceof Exception){ throw new RuntimeException((Throwable)res);}

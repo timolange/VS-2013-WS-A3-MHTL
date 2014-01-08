@@ -37,8 +37,9 @@ public class SkeletonThread extends Thread {
     @Override
     public void run(){
         Object returnVal = null;
+        MethodInvokeRequest methodInvokeRequest = null;
         try {
-            MethodInvokeRequest methodInvokeRequest = readFromClient();
+            methodInvokeRequest = readFromClient();
             Object servant = skeletonServer.getServant(methodInvokeRequest.getObjectIdentifier());
             synchronized (servant){
                 Method method = servant.getClass().getMethod(methodInvokeRequest.getCommand(), methodInvokeRequest.getParameterClasses());
